@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 
 using namespace std;
 
@@ -16,28 +17,24 @@ protected:
         for (char ch : Mssg) {
             if (isalpha(ch)) {
                 if (islower(ch)) {
-                    int index = (ch - 'a' + ShiftValue+26) % 26; // finding new placement
-                    Encoded_Mssg += lowercase_alphabet[index]; // Add the new shifted charecter in
+                    int index = (ch - 'a' + ShiftValue + 26) % 26; // finding new placement
+                    Encoded_Mssg += lowercase_alphabet[index]; // add the new shifted character in
                 } else if (isupper(ch)) {
-                    int index = (ch - 'A' + ShiftValue+26) % 26; // same for uppercase
+                    int index = (ch - 'A' + ShiftValue + 26) % 26; // same for uppercase
                     Encoded_Mssg += uppercase_alphabet[index]; 
                 }
             } else {
-                Encoded_Mssg += ch; // keep non alphabet
+                Encoded_Mssg += ch; // keep non-alphabet characters
             }
         }
         return Encoded_Mssg;
     }
 
     string Decode(string Encoded_Mssg, int Value) {
-        string Decoded_Mssg = Encode(Encoded_Mssg, -Value);
-        return Decoded_Mssg;
+        return Encode(Encoded_Mssg, -Value);
     }
 
 public:
-    void SetShiftValue(int Value) {
-        ShiftValue = Value;
-    }
 
     string Encoded(string Mssg, int Value) {
         return Encode(Mssg, Value);
@@ -48,10 +45,6 @@ public:
     }
 };
 
-class Rot13Cipher : public CaesarCipher {
-public:
-    
-};
 
 void displayMENU() {
     cout << "MENU \n";
@@ -70,76 +63,140 @@ int main() {
     CaesarCipher cipher;
 
     cout << "Welcome to the Cipher Program! \n \n";
-    cout << "There are 5 messages available to decode \n";
-    cout << "Here are the instructions, there are 5 preset words in this game that you are to guess based on a randomly generated shift value." << endl;
-    cout << "Your job is to continue guessing the shift value until you think you got it right" << endl;
-    cout << "If the message you decode is not a coherent word, enter N. If it is enter Y" << endl;
+    cout << "Here are the instructions!" << endl;
+    cout << "There are two roles: decryptor and encryptor." << endl;
+    cout << "There are 5 preset words in this game that you are to guess based on a randomly generated shift value." << endl;
+    cout << "\nAs a decryptor, your job is to continue guessing the shift value until you think you got it right." << endl;
+    cout << "If the message you decode is not a coherent word, enter N. If it is enter Y." << endl;
+    cout << "\nAs an encryptor, you get the chance to see the Caesar's Cipher method in action." << endl;
+    cout << "You will write a message and enter how many shift values." << endl; // game instructions
 
     int choice;
     string correctOrNo;
-    int points;
+    int points = 0;
 
-    string words[5] = {"hello", "names", "Bond", "James", "Canada"}; // putting in the predetermined words
-    string messages[5] = {cipher.Encoded(words[0], 3), cipher.Encoded(words[1], 3), cipher.Encoded(words[2], 3), cipher.Encoded(words[3], 3),cipher.Encoded(words[4], 3)};
-    //string of messages with the set cipher value
+    string words[5] = {"hello", "world", "superfragile", "dinosaur", "rawrrr"}; // putting in the predetermined words
+            /* ANSWERS FOR DECRYPTION */
+    string messages[5] = {cipher.Encoded(words[0], 13), cipher.Encoded(words[1], 2), cipher.Encoded(words[2], 1), cipher.Encoded(words[3], 9),cipher.Encoded(words[4], 5)};
+        //string of messages with the set cipher value      
+        
+    bool solved[5] = {false, false, false, false, false}; // tracking solved messages
     
     string eORd;
-    cout << "Would you like to be encryptor or decryptor? ";
-    cin >> eORd;
+    while (true) {
+        cout << "Would you like to be encryptor or decryptor? (E/D): ";
+        cin >> eORd;
+
+        if (eORd == "E" || eORd == "D") {
+            break; // valid input, exit the loop
+        } else {
+            cout << "Invalid selection. Please enter 'E' for encryptor or 'D' for decryptor.\n";
+        }
+    }
+
+    // Encryptor Mode
     if(eORd == "E"){
-        //displayMENUE();
-        int mc;
+        int mc, v;
         string m;
-        int v;
-        cout << "Which message do you wanna encrpt? (1, 2, 3, 4, 5)? ";
+
+        cout << "Enter (1-5): ";
         cin >> mc;
-        cout << "What message are you encrypting? " << endl;
-        cin >> m;
-        cout << "What value would you like to encrypt it with? ";
-        cin >> v;
-        words[mc] = m;
-        cout << cipher.Encoded(words[mc], v) << endl;;
+        cin.ignore();
         
-    }
-    else if(eORd == "D"){
-        displayMENU();
-        cin >> choice;
-    }
-
-    
-
-    while (choice != 6) {    //while not exiting
-        string decoded_message;
-        int index = choice - 1; // Adjust choice to index
-        encoded_mssg = messages[index];  // picks out the message the user chose
-        cout << "Encoded message: " << encoded_mssg << endl;  //prints out message
-        cout << "Enter your guess for the shift value (1-13) to decode the message: "; //enter shift value
-        cin >> value;                                                             //takes value
-        decoded_message = cipher.Decoded(encoded_mssg, value);     //decodes
-        cout << "This is the decoded message: " <<  decoded_message << endl;  //displays decoding
-        cout << "Is this correct? (Y/N): ";                    //user determines if it is correct (an actual word means they guessed the right value)
+        cout << "Enter the message to encrypt: ";
+        getline(cin, m); // allows spaces and special characters
+        cout << "Enter the shift value to encrypt with (1-13): ";
         
         while (true) {
-            cin >> correctOrNo;  //takes in yes or no
-            if (correctOrNo == "Y") {             //if yes
-                cout << "Congratulations you won!" << endl;
-                points = points + 1;
-                cout << "Points: " << points << endl;
-                break; // Break the inner loop
-            } else if (correctOrNo == "N") {            //if no repeats guessing
-                cout << "Sorry, try again" << endl;
-                cout << "Enter your guess for the shift value (1-13) to decode the message: ";
-                cin >> value;
-                decoded_message = cipher.Decoded(encoded_mssg, value);
-                cout << "This is the decoded message: " <<  decoded_message << endl;
-                cout << "Is this correct? (Y/N): ";
+            cin >> v;
+
+            // check if the input was valid
+            if (cin.fail() || v < 1 || v > 13) {
+                cin.clear(); // clear the error state
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+                cout << "Invalid shift value. Please enter a value between 1 and 13.\n";
+                cout << "Enter the shift value to encrypt with (1-13): "; // prompt again
             } else {
-                cout << "Invalid input. Please enter 'Y' or 'N': ";
+                break; // valid input, exit the loop
             }
         }
-
-        displayMENU();       //starts over once you get a point
+        
+        cout << "Encrypted message: " << cipher.Encoded(m, v) << endl;
+        cout << "You have encrypted the message of " << m 
+             << " with " << v << " shift values and it resulted to: "
+             << cipher.Encoded(m, v) << ".\nThis is an example of Caesar's Cipher method."
+             << "\nEnding program. Play again to try to decrypt preset messages!"<< endl;
+        return 0;
+    }
+    
+    // Decryptor Mode
+    while (true) {
+        displayMENU();
         cin >> choice;
+
+        if (choice == 6) {
+            cout << "Exiting the program. Goodbye!" << endl;
+            break;
+        }
+
+        if (choice < 1 || choice > 5) {
+            cout << "Invalid selection. Please try again.\n";
+            continue;
+        }
+
+        int index = choice - 1; // adjust choice to index
+
+        if (solved[index]) {
+            cout << "You have already solved this message! Please choose a different one.\n";
+            continue;
+        }
+
+        encoded_mssg = messages[index];
+        cout << "Encoded message: " << encoded_mssg << endl;
+
+        while (true) {
+            cout << "Enter your guess for the shift value (1-13): ";
+            
+            cin >> value;
+
+            // check if the input was valid
+            if (cin.fail() || value < 1 || value > 13) {
+                cin.clear(); // clear the error state
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // discard invalid input
+                cout << "Invalid input. Please enter a number between 1 and 13.\n";
+                continue;
+            }
+
+            string decoded_message = cipher.Decoded(encoded_mssg, value);
+            cout << "Decoded message: " << decoded_message << endl;
+
+            // always ask the user if they think the message is correct
+            cout << "Is this correct? (Y/N): ";
+            cin >> correctOrNo;
+
+            // if the decoded message matches the original word
+            if (decoded_message == words[index] && correctOrNo == "Y") {
+                cout << "Congratulations, you guessed it right!\n";
+                points++;
+                cout << "Points: " << points << endl;
+                solved[index] = true; // mark this message as solved
+
+                // check if all messages have been solved
+                if (points == 5) { // if all 5 messages are solved
+                    cout << "Congratulations! You've solved all the messages!\n";
+                    return 0; // exit the program
+                }
+                break;
+            } 
+            // if they say "Y" but the decoded message doesn't match the original
+            else if (correctOrNo == "Y") {
+                cout << "Sorry, that's not the correct answer. The decoded message doesn't match the original.\n";
+            }
+            // if they say "N", let them try again
+            else {
+                cout << "Let's try again!\n";
+            }
+        }
     }
 
     return 0;
