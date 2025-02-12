@@ -122,8 +122,8 @@ int main() {
         }
         
         cout << "Encrypted message: " << cipher.Encoded(m, v) << endl;
-        cout << "You have encrypted the message of " << m 
-             << " with " << v << " shift values and it resulted to: "
+        cout << "You have encrypted the message of '" << m 
+             << "' with " << v << " shift values and it resulted to: "
              << cipher.Encoded(m, v) << ".\nThis is an example of Caesar's Cipher method."
              << "\nEnding program. Play again to try to decrypt preset messages!"<< endl;
         return 0;
@@ -171,19 +171,19 @@ int main() {
             cout << "Decoded message: " << decoded_message << endl;
 
             // always ask the user if they think the message is correct
-            cout << "Is this correct? (Y/N): ";
+            cout << "Do you think this correct? (Y/N): ";
             cin >> correctOrNo;
 
             // if the decoded message matches the original word
             if (decoded_message == words[index] && correctOrNo == "Y") {
                 cout << "Congratulations, you guessed it right!\n";
                 points++;
-                cout << "Points: " << points << endl;
+                cout << "Total points: " << points << endl;
                 solved[index] = true; // mark this message as solved
 
                 // check if all messages have been solved
                 if (points == 5) { // if all 5 messages are solved
-                    cout << "Congratulations! You've solved all the messages!\n";
+                    cout << "Congratulations! You've solved all of the messages!\n";
                     return 0; // exit the program
                 }
                 break;
